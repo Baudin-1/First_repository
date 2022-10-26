@@ -71,8 +71,8 @@ int main()
 	RenderWindow window(sf::VideoMode(200, 200), "-----");
 
 		Texture t_VisibleTrue, t_VisibleFalse;
-		t_VisibleTrue.loadFromFile("C://Users/User/Desktop/VisibleTrue.png");
-		t_VisibleFalse.loadFromFile("C://Users/User/Desktop/VisibleFalse.png");
+		t_VisibleTrue.loadFromFile("Resource/VisibleTrue.png");
+		t_VisibleFalse.loadFromFile("Resource/VisibleFalse.png");
 	
 		Sprite s_VisibleTrue,s_VisibleFalse;
 		s_VisibleTrue.setTexture(t_VisibleTrue);

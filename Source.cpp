@@ -4,42 +4,124 @@
 using namespace sf;
 
 const int size = 10;
-int bomb_count = 5;
+const int bomb_count = 15;
 bool gameOver = false;
-
-enum Status
-{
-	number,
-	bomb
-};
 
 struct Field
 {
-	Status status;
+	bool mine=false;
 	bool visible = false;
 	bool checkbox = false;
 	int value = 0,x,y;
 
 }fields[size][size];
 
-int v(Field var,const int size)
+bool check(int x,int y){ return x >= 0 && x < size && y >= 0 && y < size; }
+
+int GetValue(Field var)
 {
-	using namespace std;
 	int count = 0;
-
-	vector<pair<int, int>> pairs = { make_pair(var.x - 1,var.y - 1),make_pair(var.x,var.y - 1),make_pair(var.x + 1,var.y - 1),make_pair(var.x - 1,var.y),make_pair(var.x + 1,var.y),make_pair(var.x - 1,var.y + 1),make_pair(var.x,var.y + 1),make_pair(var.x + 1,var.y + 1) };
-
-	auto last_iter = remove_if(pairs.begin(), pairs.end(), [size](pair<int, int> vars) {return vars.first>0 && vars.first<size&&vars.second>0 && vars.second<size; });
-	pairs.erase(last_iter, end(pairs));
-
-	for (pair<int,int> value:pairs)
+	//vector<pair<int, int>> pairs = { make_pair(var.x - 1,var.y - 1),make_pair(var.x,var.y - 1),make_pair(var.x + 1,var.y - 1),make_pair(var.x - 1,var.y),make_pair(var.x + 1,var.y),make_pair(var.x - 1,var.y + 1),make_pair(var.x,var.y + 1),make_pair(var.x + 1,var.y + 1) };
+	//if (var.x == 2 && var.y == 9)
+	//	count = count;
+	//auto last_iter = remove_if(pairs.begin(), pairs.end(), [size](pair<int, int> vars) {return vars.first<0 | vars.first >= size | vars.second<0 | vars.second >= size; });
+	//pairs.erase(last_iter, end(pairs));
+	//*for (int i = 0; i < 8; )
+	//{
+	//	if (i == pairs.size())
+	//		break;
+	//	if (pairs[i].first < 0 | pairs[i].first >= size | pairs[i].second < 0 | pairs[i].second >= size)
+	//	{
+	//		pairs.erase(pairs.begin() + i);
+	//	}
+	//	else
+	//		i++;
+	//}*/
+	//
+	//for (pair<int,int> value : pairs)
+	//{
+	//	if (fields[value.second][value.first].status)
+	//		count++;
+	//}
+	//return count;
+	for (int dy = -1; dy < 2; dy++)
 	{
-		if (fields[value.first][value.second].status==bomb)
-			count++;
+		for (int dx = -1; dx < 2; dx++)
+		{
+			if (check(var.x + dx, var.y + dy) && fields[var.x + dx][var.y + dy].mine)
+				count++;
+		}
 	}
 	return count;
 }
 
+void OpenField(Field &var)
+{
+	if (var.visible)
+		return;
+
+	var.visible = true;
+	if (var.value==0)
+	{
+		for (int dx = -1; dx < 2; dx++)
+		{
+			for (int dy = -1; dy < 2; dy++)
+			{
+			if(check(var.x+dx,var.y+dy))
+				OpenField(fields[var.x + dx][var.y + dy]);
+			}
+		}		
+	}
+	//if (/*check(var.x,var.y)&&*/ var.value==0)
+	//{
+	//	var.visible = true;
+	//	for (int dy = -1; dy < 2; dy++)
+	//	{
+	//		for (int dx = -1; dx < 2; dx++)
+	//		{
+	//			if (check(var.x + dx, var.y + dy)&& fields[var.x + dx][var.y + dy].visible != true/* && fields[var.y + dy][var.x + dx].visible*//* && fields[var.y + dy][var.x + dx].mine*/)
+	//			{
+	//				fields[var.x + dx][var.y + dy].visible=true;
+	//				if (dy  == 0 | dx  == 0)
+	//				{
+	//					if (dx == 0 && dy == 0)
+	//					{
+	//					}
+	//					else
+	//					{
+	//						if (fields[var.y + dy][var.x + dx].value == 0)
+	//							v2(fields[var.y + dy][var.x + dx]);
+	//					}
+	//				}
+	//			}
+	//		}
+	//	}
+	//}
+	//Field &ptr = fields[var.y - 1][var.x];
+	//if (!ptr.visible&&ptr.value)
+	//{
+	//	ptr.visible = true;
+	//	v2(ptr);
+	//}
+	// ptr = fields[var.y + 1][var.x];
+	//if (!ptr.visible&&ptr.value)
+	//{
+	//	ptr.visible = true;
+	//	v2(ptr);
+	//}
+	// ptr = fields[var.y][var.x - 1];
+	//if (!ptr.visible&&ptr.value)
+	//{
+	//	ptr.visible = true;
+	//	v2(ptr);
+	//}
+	// ptr = fields[var.y][var.x + 1];
+	//if (!ptr.visible&&ptr.value)
+	//{
+	//	ptr.visible = true;
+	//	v2(ptr);
+	//}
+}
 
 int main()
 {
@@ -47,25 +129,30 @@ int main()
 	{
 		for (int j = 0; j < size; j++)
 		{
-			fields[i][j].x = j;
-			fields[i][j].y = i;
+			fields[i][j].x = i;
+			fields[i][j].y = j;
 		}
-		
 	}
+
 	for (int i = 0; i < bomb_count;)
 	{
 		Field& link = fields[rand() % size][rand() % size];
-		if (!link.status == bomb)
+
+		if (!link.mine)
 		{
-			link.status = bomb;
-			link.value = 10;
+			link.mine = true;
+			link.value = 9;
 			i++;
 		}
 	}
-	for each(Field var in fields)
+	
+	for (int i = 0; i < size; i++)
 	{
-		if(var.status!=bomb)
-		var.value=v(var, size);
+		for (int j = 0; j < size; j++)
+		{
+			if (!fields[i][j].mine)
+				fields[i][j].value = GetValue(fields[i][j]);
+		}
 	}
 
 	RenderWindow window(sf::VideoMode(200, 200), "-----");
@@ -90,15 +177,20 @@ int main()
 			{
 				if (Mouse::isButtonPressed(Mouse::Left))
 				{
-					Field& link = fields[Mouse::getPosition(window).x / 20][Mouse::getPosition(window).y / 20];
-					link.visible = true;
+					Field &link = fields[Mouse::getPosition(window).x / 20][Mouse::getPosition(window).y / 20];
 
-					if (link.status == bomb)
+					if (link.mine)
+					{
+						link.value = 10;
 						gameOver = true;
+					}
+					else
+						OpenField(link);
 				}
 				if (Mouse::isButtonPressed(Mouse::Right))
 				{
 					Field &link = fields[Mouse::getPosition(window).x / 20][Mouse::getPosition(window).y / 20];
+
 					if (!link.visible)
 					{
 						if (link.checkbox)
@@ -109,7 +201,6 @@ int main()
 				}
 			}
 		}
-
 
 		window.clear();
 		for (int i = 0; i < size; i++)
@@ -143,14 +234,14 @@ int main()
 			{
 				for (int j = 0; j < size; j++)
 				{
-					if (fields[i][j].status==bomb)
+					if (fields[i][j].mine)
 					{
 						fields[i][j].visible = true;
 					}
 				}
 			}
 		}
-	
+
 		window.display();
 	}
 	return 0;

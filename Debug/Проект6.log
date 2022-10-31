@@ -1,6 +1,9 @@
 ﻿  Source.cpp
-d:\my projects\проект6\source.cpp(213): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
-d:\my projects\проект6\source.cpp(219): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
-d:\my projects\проект6\source.cpp(225): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+d:\my projects\проект6\source.cpp(137): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+d:\my projects\проект6\source.cpp(191): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+d:\my projects\проект6\source.cpp(195): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+d:\my projects\проект6\source.cpp(308): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+d:\my projects\проект6\source.cpp(314): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+d:\my projects\проект6\source.cpp(320): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
   Проект6.vcxproj -> D:\MY PROJECTS\Проект6\Debug\Проект6.exe
   Проект6.vcxproj -> D:\MY PROJECTS\Проект6\Debug\Проект6.pdb (Partial PDB)

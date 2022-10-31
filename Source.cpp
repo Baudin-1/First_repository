@@ -1,9 +1,11 @@
 #include <SFML/Graphics.hpp>
 #include<ctime>
+#include<string>
+#include<vector>
 
 using namespace sf;
 
-const int size = 10;
+int size = 10;
 const int bomb_count = 15;
 bool gameOver = false;
 
@@ -14,7 +16,9 @@ struct Field
 	bool checkbox = false;
 	int value = 0,x,y;
 
-}fields[size][size];
+};
+
+std::vector<std::vector<Field>> fields;
 
 bool check(int x,int y){ return x >= 0 && x < size && y >= 0 && y < size; }
 
@@ -123,8 +127,99 @@ void OpenField(Field &var)
 	//}
 }
 
+
+void q(String str, int x, int y, RenderWindow &windows)
+{
+	Font font;
+	font.loadFromFile("ALGER.ttf");
+	Text text(str, font);
+	text.setCharacterSize(20);
+	text.setPosition(x, y);
+	windows.draw(text);
+}
+
+int menu()
+{
+	Texture t_VisibleTrue, t_VisibleFalse;
+	t_VisibleTrue.loadFromFile("Resource/VisibleTrue.png");
+	t_VisibleFalse.loadFromFile("Resource/VisibleFalse.png");
+
+	Sprite s_VisibleTrue, s_VisibleFalse;
+	s_VisibleTrue.setTexture(t_VisibleTrue);
+	s_VisibleFalse.setTexture(t_VisibleFalse);
+
+	//const Texture *ptr= &t_VisibleFalse;
+	RenderWindow windows(sf::VideoMode(200, 200), "-----");
+	/*setlocale(LC_ALL, "ru");
+	Font font;
+	font.loadFromFile("ALGER.ttf");
+	Text text(L"сло", font);
+	text.setCharacterSize(30);*/
+	//text.setColor(sf::Color::Red);
+	int field = 0;
+	while (windows.isOpen())
+	{
+		windows.clear();
+		sf::Event event;
+		while (windows.pollEvent(event))
+		{
+			if (event.type == sf::Event::Closed)
+				windows.close();
+			if (Mouse::isButtonPressed(Mouse::Left))
+			{
+				int x = Mouse::getPosition(windows).x;
+				int y = Mouse::getPosition(windows).y;
+
+				if (x >= 5 && x <= 25 && y >= 10 && y <= 40)
+					field = 0;
+				if (x >= 5 && x <= 25 && y >= 40 && y <= 60)
+					field = 1;
+				if (x >= 5 && x <= 25 && y >= 70 && y <= 90)
+					field = 2;
+
+			}
+			if (Keyboard::isKeyPressed(sf::Keyboard::BackSpace))
+			{
+				return field * 5 + 5;
+			}
+		}
+		RectangleShape R(Vector2f(20, 20));
+		R.setTexture(&t_VisibleFalse);
+		R.setTextureRect(IntRect(0, 0, 20, 20));
+		for (int i = 10; i < 71; i += 30)
+		{
+			R.setPosition(5, i);
+			windows.draw(R);
+
+			s_VisibleFalse.setTextureRect(IntRect(20, 0, 20, 20));
+			s_VisibleFalse.setPosition(5, field * 30 + 10);
+			windows.draw(s_VisibleFalse);
+
+		}
+		/*R.setPosition(5, 10);
+		windows.draw(R);*/
+
+		q("EASY", 30, 10, windows);
+		q("NORMAL", 30, 40, windows);
+		q("HARD", 30, 70, windows);
+
+
+
+
+
+		windows.display();
+	}
+	return 0;
+}
+
 int main()
 {
+	size = menu();
+	fields.resize(size);
+
+	for (int i = 0; i < size; i++)
+		fields[i].resize(size);
+
 	for (int i = 0; i < size; i++)
 	{
 		for (int j = 0; j < size; j++)
